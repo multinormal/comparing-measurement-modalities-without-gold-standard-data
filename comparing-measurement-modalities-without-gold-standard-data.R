@@ -1,5 +1,5 @@
 # This code and simulation are based on Hoppin et al., IEEE TMI 21(5) 2002.
-# The file is in three parts. The first sets up the R environment.
+# The file is in four parts. The first sets up the R environment.
 # The second sets up the environment further to replicates the first experiment
 # in the Hoppin et al. paper, but using JAGS. The simulation uses invented gold
 # standard data that would of course not be available if using this method for a
@@ -8,7 +8,15 @@
 # part applies the method to the invented data. This part could be reused to
 # actually perform such an analysis on real data. Note that you would need to edit
 # the JAGS model file, in particular the specification of the distribution of the
-# quantity being estimated.
+# quantity being estimated. The fourth part compares the modalities in terms of
+# the slope, intercept, and standard deviation parameters (defined by Hoppin et al.)
+# by computing the posterior probabilities that the magnitude of a parameter for
+# a given modality is lower than the magnitude of a parameter for another modality.
+# This fourth part is specific to the replication of the Hoppin et al. analysis
+# since it assumes three modalities; it also assumes the use of two chains in the
+# MCMC run, and as such it is not sufficiently generic to run as-is if these
+# assumptions are violated. However, it should give you an idea as to how to code
+# such an analysis.
 
 #############################################
 # PART 1: Set up the environment
@@ -69,7 +77,7 @@ par(op)
 observations <- matrix(c(estimates.1, estimates.2, estimates.3), nrow = n.obs)
 
 #############################################
-# PART 2: Perform the analysis
+# PART 3: Perform the analysis
 #############################################
 
 # A real analysis would start at this point, with an n.obs x n.mods matrix called observations
@@ -94,3 +102,52 @@ print(result)
 
 # Plot summaries of the MCMC sampling and posterior distributions for the estimated parameters.
 plot(result)
+
+
+#############################################
+# PART 4: Posterior comparative probabilities
+#############################################
+
+# NOTE: This assumes you're using two chains in run.jags, which is the default.
+mcmc.samples <- rbind(result$mcmc[,][[1]], result$mcmc[,][[2]])
+
+# Define a function that estimates the posterior probability that the absolute
+# value of a linear model parameter is less than the absolute value of another
+# linear model parameter. This allows us to calculate quantities such as
+# P(|a[1]| < |a[2]|).
+probability.left.better.than.right <- function(left.colname, right.colname) {
+  samples <- mcmc.samples[, c(left.colname, right.colname)]
+  stopifnot(nrow(mcmc.samples) == nrow(samples))
+  n.better <- length(which( abs(samples[,1]) < abs(samples[,2]) ))
+  n.better / nrow(mcmc.samples)
+}
+
+# Calculate the posterior probabilities.
+p.a1.better.than.a2 <- probability.left.better.than.right('a[1]', 'a[2]')
+p.a1.better.than.a3 <- probability.left.better.than.right('a[1]', 'a[3]')
+p.a2.better.than.a3 <- probability.left.better.than.right('a[2]', 'a[3]')
+
+p.b1.better.than.b2 <- probability.left.better.than.right('b[1]', 'b[2]')
+p.b1.better.than.b3 <- probability.left.better.than.right('b[1]', 'b[3]')
+p.b2.better.than.b3 <- probability.left.better.than.right('b[2]', 'b[3]')
+
+p.s1.better.than.s2 <- probability.left.better.than.right('s[1]', 's[2]')
+p.s1.better.than.s3 <- probability.left.better.than.right('s[1]', 's[3]')
+p.s2.better.than.s3 <- probability.left.better.than.right('s[2]', 's[3]')
+
+# Print the posterior probabilities.
+
+print('Posterior inferences for the slope parameter:')
+print(paste('Posterior P(|a[1]| < |a[2]|) = ', p.a1.better.than.a2, sep = ' '))
+print(paste('Posterior P(|a[1]| < |a[3]|) = ', p.a1.better.than.a3, sep = ' '))
+print(paste('Posterior P(|a[2]| < |a[3]|) = ', p.a2.better.than.a3, sep = ' '))
+
+print('Posterior inferences for the intercept parameter:')
+print(paste('Posterior P(|b[1]| < |b[2]|) = ', p.b1.better.than.b2, sep = ' '))
+print(paste('Posterior P(|b[1]| < |b[3]|) = ', p.b1.better.than.b3, sep = ' '))
+print(paste('Posterior P(|b[2]| < |b[3]|) = ', p.b2.better.than.b3, sep = ' '))
+
+print('Posterior inferences for the standard deviation parameter:')
+print(paste('Posterior P(|s[1]| < |s[2]|) = ', p.s1.better.than.s2, sep = ' '))
+print(paste('Posterior P(|s[1]| < |s[3]|) = ', p.s1.better.than.s3, sep = ' '))
+print(paste('Posterior P(|s[2]| < |s[3]|) = ', p.s2.better.than.s3, sep = ' '))

@@ -56,6 +56,7 @@ To really understand what just happened, you should read the code. However, brie
 * Plotted the simulated gold standard and observed data.
 * Ran the version of the Hoppin et al. method on the simulated observed data.
 * Summarized the posterior distributions of the linear model parameters and plotted simple diagnostics and the posterior distributions for each of the linear model parameters.
+* Compare the modalities in terms of the parameters of the linear models by computing posterior probabilities that a given parameter for one modality is better than that for another (see below).
 
 On my computer, the tabular result was as follows (some columns removed):
 
@@ -78,6 +79,8 @@ The second three rows are for the intercept terms. These describe the modalities
 The second three rows are for the residual standard deviations. These describe the modalities' precisions. An ideal modality would have a standard deviation of zero. The correct values are 0.05, 0.03, and 0.08, respectively. The posterior medians and means are very close.
 
 Several plots are produced (use the left and right arrow buttons in the Plots pane to see them). The first shows three scatter plots, illustrating the relationships between the gold standard and estimated values for the three modalities. Subsequent plots each show: a trace of the MCMC samples drawn from the posterior distribution of a given parameter of the linear model (top left; two chains were used, hence two colors); empirical cumulative distribution functions for the parameter (top right; again, two chains); an autocorrelation plot (bottom right); and a histogram of the posterior distribution for the parameter (bottom left). I'm not entirely sure what the final plot shows; perhaps the covariance matrix for parameters?
+
+Finally, we compare the modalities by computing posterior probabilities that a given parameter for one modality is better than that for another modality. Typically when comparing things based on data, one wants to know not only which thing is best, but also how confident we can be about that. Often, quantities such as P-values or confidence intervals are used. With the Bayesian approach, however, we can compute probabilities that are perhaps more interpretable. A good modality will have slope, intercept, and standard deviation values whose absolute values are small. Given the MCMC samples from the posterior distribution of those parameters, we can compute the probability that, for example, the slope parameter for modality 1 is better than the slope parameter for modality 2. This can be stated mathematically as P(|a[1]| < |a[2]|). We can do similarly for all relevant combinations of parameter and modality. These probabilities are computed and displayed. We see, for example, that P(|b[2]| < |b[3]|) =  0.9925, which is consistent with the true values of b[2] and b[3] being 0.0 and 0.1, respectively. We also see that P(|b[1]| < |b[3]|) =  0.47115, which is consistent with the true values of -0.1 and 0.1 having equal magnitudes. Therefore we can make statements along the lines of "The posterior probability that modality 2 has better accuracy than modality 3 is 0.99" and "The posterior probability that modality 1 has better accuracy than modality 3 is approximately 50%."
 
 
 ## Outline of the JAGS file
