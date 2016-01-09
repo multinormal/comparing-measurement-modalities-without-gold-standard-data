@@ -55,9 +55,11 @@ estimates.2 <- (a.2 * gold.standard.data) + b.2 + rnorm(n = n.obs, mean = 0, sd 
 estimates.3 <- (a.3 * gold.standard.data) + b.3 + rnorm(n = n.obs, mean = 0, sd = s.3)
 
 # Plot the gold standard data against the estimates.
+op <- par(mfrow = c(1,3))
 plot(gold.standard.data, estimates.1)
 plot(gold.standard.data, estimates.2)
 plot(gold.standard.data, estimates.3)
+par(op)
 
 # Bundle the estimates into a matrix; this would be the raw data in an actual analysis,
 # but here we use the simulated values. Note that we do not include the simulated gold
