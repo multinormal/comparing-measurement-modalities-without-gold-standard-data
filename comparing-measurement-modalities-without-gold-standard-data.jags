@@ -1,0 +1,41 @@
+# Data section:
+data {
+  # Obtain the number of observations (rows) and modalities (columns)
+  # based on the observations variable from the R file.
+  dimensions <- dim(observations)
+  n.obs <- dimensions[1]
+  n.modalities <- dimensions[2]
+}
+
+# Model section:
+model {
+  # 1. Specify the linear models.
+  for(m in 1:n.modalities) {
+    for(p in 1:n.obs) {
+      # This observation was drawn for a normal with mean mu[p, m] and precision tau[m].
+      observations[p, m] ~ dnorm(mu[p, m], tau[m])
+      # The mean for the observation is given by a linear model.
+      mu[p, m] <- (a[m] * true[p]) + b[m]
+    }
+    
+    # We are not interested in the precisions, tau, but in the standard deviations, s.
+    s[m] <- sqrt(1.0 / (tau[m]))
+  }
+  
+  # 2. Specify the distributions of the unknown parameters.
+  for(m in 1:n.modalities) {
+    # The precision for this modality has a flat-ish gamma distribution.
+    tau[m] ~ dgamma(0.001, 0.001)
+    # The slope parameter for this modality has a flat-ish normal distribution.
+    a[m] ~ dnorm(0, 1 / 100)
+    # The intercept parameter for this modality has a flat-ish normal distribution.
+    b[m] ~ dnorm(0, 1 / 100)
+  }
+  
+  for(p in 1:n.obs) {
+    # The true value for this individual has the following distribution;
+    # this must be a good match for the actual distribution in the population
+    # in which the observations were made.
+    true[p] ~ dbeta(1.5, 2.0)
+  }  
+}

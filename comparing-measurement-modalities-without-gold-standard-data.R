@@ -1,0 +1,94 @@
+# This code and simulation are based on Hoppin et al., IEEE TMI 21(5) 2002.
+# The file is in three parts. The first sets up the R environment.
+# The second sets up the environment further to replicates the first experiment
+# in the Hoppin et al. paper, but using JAGS. The simulation uses invented gold
+# standard data that would of course not be available if using this method for a
+# real analysis, since assessing accuracy and precision of a number of modalities
+# in the absence of gold standard data is the problem being addressed! The third
+# part applies the method to the invented data. This part could be reused to
+# actually perform such an analysis on real data. Note that you would need to edit
+# the JAGS model file, in particular the specification of the distribution of the
+# quantity being estimated.
+
+#############################################
+# PART 1: Set up the environment
+#############################################
+
+library(runjags) # You need the JAGS binary installed, the runjags package, and its dependencies.
+
+# Set the random number generator seed, so we (should) get repeatable results each run.
+set.seed(1234)
+
+# Set the working directory to the directory containing this .R file, so that
+# the path to the JAGS model file can be specified simply.
+current.directory <- dirname(sys.frame(1)$ofile)
+setwd(current.directory)
+
+#############################################
+# PART 2: Set up the Hoppin et al. simulation
+#############################################
+
+# Specify the number of observations (e.g., patients).
+n.obs <- 100
+
+# Specify and sample from the distribution of the gold standard data.
+gold.standard.data <- rbeta(n = n.obs, shape1 = 1.5, shape2 = 2.0) # Values as for Exp A in Hoppin et al.
+
+# The relationships between the estimates made by the modalities and the gold standard
+# data are modeled as linear with normally-distributed residuals. Specify the slopes,
+# intercepts, and standard deviations on the distributions of the residuals for the simulation.
+# These are the parameters that are of interest and will be estimated. Compare the result
+# of the analysis to these values.
+a.1 <- 0.6
+a.2 <- 0.7
+a.3 <- 0.8 # The slopes.
+b.1 <- -0.1
+b.2 <- 0.0
+b.3 <- 0.1 # The intercepts.
+s.1 <- 0.05
+s.2 <- 0.03
+s.3 <- 0.08 # The standard deviations.
+
+# Generate the estimates for the three modalities.
+estimates.1 <- (a.1 * gold.standard.data) + b.1 + rnorm(n = n.obs, mean = 0, sd = s.1)
+estimates.2 <- (a.2 * gold.standard.data) + b.2 + rnorm(n = n.obs, mean = 0, sd = s.2)
+estimates.3 <- (a.3 * gold.standard.data) + b.3 + rnorm(n = n.obs, mean = 0, sd = s.3)
+
+# Plot the gold standard data against the estimates.
+plot(gold.standard.data, estimates.1)
+plot(gold.standard.data, estimates.2)
+plot(gold.standard.data, estimates.3)
+
+# Bundle the estimates into a matrix; this would be the raw data in an actual analysis,
+# but here we use the simulated values. Note that we do not include the simulated gold
+# standard data in this matrix, as that must not be used in the analysis.
+# The rows of observations matrix are the individuals (e.g., patients) and the columns
+# are the modalities.
+observations <- matrix(c(estimates.1, estimates.2, estimates.3), nrow = n.obs)
+
+#############################################
+# PART 2: Perform the analysis
+#############################################
+
+# A real analysis would start at this point, with an n.obs x n.mods matrix called observations
+# containing the n.obs estimates of the gold standard values made using the n.mods modalities.
+
+# Specify the variables that we want to estimate; these must have the same names as the corresponding
+# variables in the JAGS file.
+model.parameters <- c('a', 'b', 's') # This must be a vector (i.e., made using c()).
+  # Note that a, b, and s are vectors, each with the same number of elements as there are modalities.
+
+# Specify the path to the JAGS file (here, relative to the current directory).
+model.file <- 'comparing-measurement-modalities-without-gold-standard-data.jags'
+
+# Run JAGS.
+result <- run.jags(data = list(observations = observations),
+                      model = model.file,
+                      monitor = model.parameters,
+                      thin = 2)
+
+# Print a tabular summary of the estimates.
+print(result)
+
+# Plot summaries of the MCMC sampling and posterior distributions for the estimated parameters.
+plot(result)
