@@ -111,21 +111,21 @@ plot(result)
 # NOTE: This assumes you're using two chains in run.jags, which is the default.
 mcmc.samples <- rbind(result$mcmc[,][[1]], result$mcmc[,][[2]])
 
-# Define a function that estimates the posterior probability that the absolute
-# value of a linear model parameter is less than the absolute value of another
-# linear model parameter. This allows us to calculate quantities such as
-# P(|a[1]| < |a[2]|).
-probability.left.better.than.right <- function(left.colname, right.colname) {
+# Define a function that estimates the posterior probability that the
+# value of a linear model parameter is closer to the ideal value of
+# that parameter, w, than another linear model parameter. This allows
+# us to calculate quantities such as P(|a[1] - w| < |a[2] - w|).
+probability.left.better.than.right <- function(left.colname, right.colname, w = 0) {
   samples <- mcmc.samples[, c(left.colname, right.colname)]
   stopifnot(nrow(mcmc.samples) == nrow(samples))
-  n.better <- length(which( abs(samples[,1]) < abs(samples[,2]) ))
+  n.better <- length(which( abs(samples[,1] - w) < abs(samples[,2] - w) ))
   n.better / nrow(mcmc.samples)
 }
 
 # Calculate the posterior probabilities.
-p.a1.better.than.a2 <- probability.left.better.than.right('a[1]', 'a[2]')
-p.a1.better.than.a3 <- probability.left.better.than.right('a[1]', 'a[3]')
-p.a2.better.than.a3 <- probability.left.better.than.right('a[2]', 'a[3]')
+p.a1.better.than.a2 <- probability.left.better.than.right('a[1]', 'a[2]', w = 1)
+p.a1.better.than.a3 <- probability.left.better.than.right('a[1]', 'a[3]', w = 1)
+p.a2.better.than.a3 <- probability.left.better.than.right('a[2]', 'a[3]', w = 1)
 
 p.b1.better.than.b2 <- probability.left.better.than.right('b[1]', 'b[2]')
 p.b1.better.than.b3 <- probability.left.better.than.right('b[1]', 'b[3]')
@@ -138,9 +138,9 @@ p.s2.better.than.s3 <- probability.left.better.than.right('s[2]', 's[3]')
 # Print the posterior probabilities.
 
 print('Posterior inferences for the slope parameter:')
-print(paste('Posterior P(|a[1]| < |a[2]|) = ', p.a1.better.than.a2, sep = ' '))
-print(paste('Posterior P(|a[1]| < |a[3]|) = ', p.a1.better.than.a3, sep = ' '))
-print(paste('Posterior P(|a[2]| < |a[3]|) = ', p.a2.better.than.a3, sep = ' '))
+print(paste('Posterior P(|a[1] - 1| < |a[2] - 1|) = ', p.a1.better.than.a2, sep = ' '))
+print(paste('Posterior P(|a[1] - 1| < |a[3] - 1|) = ', p.a1.better.than.a3, sep = ' '))
+print(paste('Posterior P(|a[2] - 1| < |a[3] - 1|) = ', p.a2.better.than.a3, sep = ' '))
 
 print('Posterior inferences for the intercept parameter:')
 print(paste('Posterior P(|b[1]| < |b[2]|) = ', p.b1.better.than.b2, sep = ' '))
