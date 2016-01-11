@@ -28,7 +28,7 @@ model {
     # The precision for this modality has a flat-ish gamma prior.
     tau[m] ~ dgamma(0.001, 0.001)
     # The slope parameter for this modality has a flat-ish normal prior.
-    a[m] ~ dnorm(0, 1 / 100)
+    a[m] ~ dnorm(1, 1 / 100) # Mean of 1 as this is the slope parameter.
     # The intercept parameter for this modality has a flat-ish normal prior.
     b[m] ~ dnorm(0, 1 / 100)
   }
