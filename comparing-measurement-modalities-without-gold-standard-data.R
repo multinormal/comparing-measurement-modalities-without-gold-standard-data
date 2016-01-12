@@ -91,11 +91,22 @@ model.parameters <- c('a', 'b', 's') # This must be a vector (i.e., made using c
 # Specify the path to the JAGS file (here, relative to the current directory).
 model.file <- 'comparing-measurement-modalities-without-gold-standard-data.jags'
 
+# Specify initialization parameters for JAGS. In particular, specify the pseudo-random
+# number generators and their seeds, which should guarantee reproducible analyses.
+# Note that this also implicitly specifies the number of chains.
+inits <- list(
+              list(.RNG.name = 'base::Super-Duper', .RNG.seed = 12345),
+              list(.RNG.name = 'base::Mersenne-Twister', .RNG.seed = 67890)
+              )
+
 # Run JAGS.
 result <- run.jags(data = list(observations = observations),
                       model = model.file,
                       monitor = model.parameters,
-                      thin = 2)
+                      thin = 2,
+                      inits = inits,
+                      modules = 'glm'
+                      )
 
 # Print a tabular summary of the estimates.
 print(result)
