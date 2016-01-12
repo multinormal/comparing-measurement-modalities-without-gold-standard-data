@@ -62,19 +62,19 @@ To really understand what just happened, you should read the code. However, brie
 * Summarized the posterior distributions of the linear model parameters and plotted simple diagnostics and the posterior distributions for each of the linear model parameters.
 * Compared the modalities in terms of the parameters of the linear models by computing posterior probabilities that a given parameter for one modality is better than that for another (see below).
 
-On my computer, the tabular result was as follows (some columns removed):
+The tabular result is as follows, and these results should be reproducible:
 
-     |   Lower95 |    Median |   Upper95 |      Mean |        SD
------|-----------|-----------|-----------|-----------|----------
-a[1] |   0.51061 | 0.57114   | 0.63707   | 0.5724    |  0.032384
-a[2] |   0.58167 | 0.64167   | 0.70729   | 0.64294   |  0.032488
-a[3] |   0.69824 | 0.78931   | 0.88578   | 0.79093   |  0.047924
-b[1] |  -0.12524 | -0.093647 | -0.061995 | -0.094383 |  0.016187
-b[2] | -0.019156 | 0.015343  | 0.047074  | 0.01444   |  0.017148
-b[3] |  0.041432 | 0.091301  | 0.13402   | 0.09009   |  0.023964
-s[1] |  0.037298 | 0.04699   | 0.056831  | 0.047102  | 0.0049714
-s[2] |    0.0242 | 0.036176  | 0.049022  | 0.03621   | 0.0062333
-s[3] |   0.06573 | 0.079162  | 0.093629  | 0.079414  | 0.0071156
+     |   Lower95 |    Median |   Upper95 |     Mean |        SD | Mode |       MCerr | MC%ofSD | SSeff |       AC.20 |   psrf
+-----|-----------|-----------|-----------|----------|-----------|------|-------------|---------|-------|-------------|-------
+a[1] |   0.51261 |    0.5709 |   0.63807 |  0.57218 |  0.031981 |   -- |  0.00054655 |     1.7 |  3424 |    0.065062 | 1.0002
+a[2] |   0.57968 |   0.64108 |   0.70675 |  0.64248 |  0.032407 |   -- |  0.00063841 |       2 |  2577 |    0.098514 | 1.0005
+a[3] |   0.69825 |   0.78844 |   0.88705 |  0.78985 |  0.048312 |   -- |  0.00078319 |     1.6 |  3805 |     0.05648 | 1.0002
+b[1] |  -0.12712 | -0.094199 | -0.062671 | -0.09521 |  0.016399 |   -- |   0.0003718 |     2.3 |  1945 |     0.18012 | 1.0003
+b[2] | -0.021108 |  0.014469 |  0.045689 | 0.013631 |  0.017195 |   -- |  0.00043596 |     2.5 |  1556 |     0.23429 | 1.0014
+b[3] |  0.042231 |  0.090352 |   0.13718 | 0.089255 |  0.024155 |   -- |  0.00051585 |     2.1 |  2193 |     0.15124 | 1.0008
+s[1] |  0.037361 |   0.04692 |   0.05708 | 0.047074 | 0.0050019 |   -- | 0.000065565 |     1.3 |  5820 | -0.00081461 | 1.0002
+s[2] |  0.024339 |   0.03627 |  0.047996 | 0.036263 | 0.0060848 |   -- |  0.00012553 |     2.1 |  2350 |     0.11217 | 1.0004
+s[3] |  0.065776 |  0.079092 |  0.093507 | 0.079415 | 0.0071616 |   -- | 0.000069382 |       1 | 10654 |   0.0083233 | 1.0002
 
 The first three rows are for the slope terms in the linear models for the three modalities. These describe how the modalities' estimates deviate from the true values as a function of the value itself. An ideal modality would have a slope term equal to unity. The correct values (used to generate the data) are 0.6, 0.7, and 0.8, respectively. The posterior medians and means are all reasonably similar to those values, and those values lie in the lower- to upper-95% intervals. Inference is perhaps slightly poor for the second modality, which is underestimated.
 
