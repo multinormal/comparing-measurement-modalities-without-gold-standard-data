@@ -78,7 +78,7 @@ The tabular result is as follows, and these results should be reproducible:
 
 The first three rows are for the slope terms in the linear models for the three modalities. These describe how the modalities' estimates deviate from the true values as a function of the value itself. An ideal modality would have a slope term equal to unity. The correct values (used to generate the data) are 0.6, 0.7, and 0.8, respectively. The posterior medians and means are all reasonably similar to those values, and those values lie in the lower- to upper-95% intervals. Inference is perhaps slightly poor for the second modality, which is underestimated.
 
-The second three rows are for the intercept terms. These describe the modalities' accuracies (biases). An ideal modality would have an intercept of zero. The correct values are -0.1, 0.0, and 1.0, respectively. The posterior medians and means are very close to these figures.
+The next three rows are for the intercept terms. These describe the modalities' accuracies (biases). An ideal modality would have an intercept of zero. The correct values are -0.1, 0.0, and 0.1, respectively. The posterior medians and means are very close to these figures.
 
 The final three rows are for the residual standard deviations. These describe the modalities' precisions. An ideal modality would have a standard deviation of zero. The correct values are 0.05, 0.03, and 0.08, respectively. The posterior medians and means are very close.
 
