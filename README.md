@@ -1,5 +1,9 @@
 # Comparing the accuracy and precision of measurement modalities without gold standard data
 
+## Disclaimer
+
+The instructions and code described here are now quite old, and there's no guarantee that they will work on modern systems and recent releases of R and JAGS. While JAGS is a fine tool and appropriate for this analysis, [Stan](https://mc-stan.org) is currently my first choice of tool for Bayesian analyses, but has a more challenging learning curve.
+
 ## Introduction
 
 This repository contains R and JAGS files that implement a version of a method described by Hoppin et al. in IEEE TMI 21(5) 2002. The problem addressed is how to assess the accuracy and precision of multiple ways (modalities) of estimating some quantity given a sample of such estimates, but in the absence of gold standard data. This seems intractable, but Hoppin et al. assume linear relationships with iid residuals between the true and estimated values for each modality and write those relationships in terms of the *distribution* of the true values. (Such a distribution could be obtained from the literature or derived using knowledge of the specific thing being estimated.) They then write a log-likelihood expression for the parameters of the linear models in which they integrate out the unknown true values. The result is estimates of the slopes and intercepts of the line of best fit between the true and estimated values, and the standard deviation of the distributions of the residuals, for each modality. The paper also presents some simulations that demonstrate the method.
