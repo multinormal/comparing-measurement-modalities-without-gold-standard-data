@@ -119,7 +119,7 @@ JAGS derives from the [BUGS project](http://www.mrc-bsu.cam.ac.uk/software/bugs/
 
 If you want to learn more about Bayesian estimation, I suggest two books:
 
-1. [Bayesian Statistics, by the Open University Course Team](http://www.amazon.co.uk/dp/B00IJ0ORL6). This is a very solid introduction that focuses on the basic mathematics of Baysian statistics and later introduces the use of computation to perform estimation.
+1. [Bayesian Statistics, by the Open University Course Team](https://www.amazon.co.uk/dp/0749213698/ref=cm_sw_em_r_mt_dp_3NAHP1EA1N6PXS5QT0N7). This is a very solid introduction that focuses on the basic mathematics of Baysian statistics and later introduces the use of computation to perform estimation.
 2. [Bayesian Data Analysis, by Andrew Gelman, John Carlin, Hal Stern, David Dunson, Aki Vehtari, and Donald Rubin](http://www.stat.columbia.edu/~gelman/book/). This is arguably *the* book on Bayesian data analysis, but I would suggest starting with the Open University book first.
 
 
